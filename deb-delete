@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+my $root = "/home/deb-record";
+my $edge = "-"x80;
+
+my $name = $ARGV[0];
+
+unless($name){
+	print "Please select a name\n";
+	exit;
+}
+
+my $file;
+
+opendir PATH,"$root/installed" or die "Cannot opendir $root/installed: $!";
+my @filenames = readdir PATH;
+closedir PATH;
+for my $filename (@filenames) {
+	next if $filename eq '.' or $filename eq '..';
+	my $tmpname = $filename;
+	$tmpname =~ s/_\[\d+-\d+-\d+\]$//;
+	if($name eq $tmpname){
+		$file = $filename;
+		last;
+	}
+}
+
+if($file){
+	rename "$root/installed/$file" => "$root/deleted/$file" or die "Cannot move file $file: $!";
+	print "$edge\n";
+	print "File \"\$root/installed/$file\"\nmoved to \"\$root/deleted/$file\"\n";
+	print "$edge\n";
+}else{
+	print "$edge\n";
+	print "File \"\$root/installed/$name"."_[XXXX-XX-XX]\" isn't in \$root/installed/\n";
+	print "$edge\n";
+}
+	
+

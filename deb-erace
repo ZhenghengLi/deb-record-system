@@ -1,0 +1,47 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+my $root = "/home/deb-record";
+my $edge = "-"x80;
+
+my $name = $ARGV[0];
+
+unless($name){
+        print "Please select a name\n";
+        exit;
+}
+
+my $file;
+
+opendir PATH,"$root/deleted" or die "Cannot opendir $root/deleted: $!";
+my @filenames = readdir PATH;
+closedir PATH;
+for my $filename (@filenames) {
+	next if $filename eq '.' or $filename eq '..';
+	my $tmpname = $filename;
+	$tmpname =~ s/_\[\d+-\d+-\d+\]$//;
+	if($name eq $tmpname){
+		$file = $filename;
+		last;
+	}
+}
+
+print "$edge\n";
+if($file){
+	print "Are you sure to erace file: \$root/deleted/$file? (Y/n): ";
+	my $flag;
+	chomp($flag = <STDIN>);
+	if($flag eq '' or $flag eq 'y'){
+		unlink "$root/deleted/$file" or die "Cannot remove file $file: $!";
+		print "File \"\$root/deleted/$file\" has been eraced\n";
+	}else{
+		print "Aborted\n";
+		print "$edge\n";
+		exit;
+	}
+}else{
+	print "File \"\$root/deleted/$name"."_[XXXX-XX-XX]\" isn't in \$root/deleted/\n";
+}
+print "$edge\n";
+

@@ -1,0 +1,43 @@
+#!/usr/bin/perl
+use warnings;
+use strict;
+
+my $root = "/home/deb-record";
+my $edge = "-"x80;
+
+my $flag = $ARGV[0];
+
+unless($flag){
+	print "use option -inst or -del\n";
+	exit;
+}
+
+unless($flag eq '-inst' or $flag eq '-del'){
+	print "wrong option, use -inst or -del\n";
+	exit;
+}
+
+print "$edge\n";
+if($flag eq '-inst'){
+	opendir PATH, "$root/installed"
+		or die "Cannot opendir $root/installed: $!";
+	my @files = readdir PATH;
+	closedir PATH;
+	for my $file (@files){
+		next if $file eq '.' or $file eq '..';
+		print "$file\n";
+	}
+}
+
+if($flag eq '-del'){
+	opendir PATH, "$root/deleted"
+		or die "Cannot opendir $root/installed: $!";
+	my @files = readdir PATH;
+	closedir PATH;
+	for my $file (@files){
+		next if $file eq '.' or $file eq '..';
+		print "$file\n";
+	}
+}
+print "$edge\n";
+
