@@ -1,2 +1,2 @@
 # deb-record-system
-Scripts to record the change history of usage of "apt-get install" and "dpkg -P".
+Scripts to record the change history of the usage of "apt-get install" and "dpkg -P".
